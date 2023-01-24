@@ -89,6 +89,17 @@ router.post('/registerEmployer', async (req, res) => {
         adress:req.body.adress,
         city:req.body.city,
         zipcode:req.body.zipcode,
+
+        jobs:{
+            level: req.body.jobs.level,
+            companyjob: req.body.jobs.companyjob,
+            startdate : (req.body.jobs.startdate) ? req.body.jobs.startdate : "",
+
+        },
+        
+
+
+
         createdByu:req.body.createdByu,
         companyBy:req.body.companyBy,
        

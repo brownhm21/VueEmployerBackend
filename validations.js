@@ -42,12 +42,16 @@ const registerEmployerValidation = data =>{
         adress:Joi.string().min(6).required(),
         city:Joi.string().required(),
         zipcode:Joi.string().max(5).required(),
-        jobs:{
-            level: Joi.string().required(),
-            companyjob: Joi.string().required(),
-            startdate: Joi.date(),
-            endDate: Joi.date()
-        },
+        ///jobs:Joi.object().required(),
+        jobs:Joi.object().keys({
+
+            level :Joi.string().required(),
+            companyjob:Joi.string().required(),
+            startdate:Joi.date(),
+            endDate:Joi.date(),
+
+        }),
+        avatar: Joi.string(),
         createdByu:Joi.object().required(),
         companyBy:Joi.object().required(),
     };

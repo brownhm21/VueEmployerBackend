@@ -182,6 +182,16 @@ router.get('/companyUser/:id', async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 });
+///////////////////////////get a lot of companies by user
+router.get('/companyUserr/:id', async (req, res) => {
+    try {
+        const company = await Company.find({createdBy:req.params.id})
+        if (!company) throw new Error('No Company found')
+        res.status(200).json(company)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+});
 
 ///////////////////////////////////Update company by Id/*
 /*router.put('/update-company/:id',async (req, res) =>{

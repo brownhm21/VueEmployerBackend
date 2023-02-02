@@ -39,7 +39,7 @@ var upload = multer({
         return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
       }
     }
-}).single('image');
+}).single('file');
 
 router.post('/addEmployer', upload, async (req, res) => {
 
@@ -60,18 +60,16 @@ router.post('/addEmployer', upload, async (req, res) => {
         Lastname: req.body.Lastname,
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
-        adress: req.body.adress,
+        address: req.body.address,
         city: req.body.city,
         zipcode: req.body.zipcode,
-        avatar:  req.file.fieldname,
+        avatar:  req.file.avatar,
 
         jobs: {
-            level: req.body.jobs.level,
-            companyjob: req.body.jobs.companyjob,
-            startdate: req.body.jobs.startdate,
-            endDate: req.body.jobs.endDate,
-
-
+            level: req.body.level,
+            companyjob: req.body.companyjob,
+            startdate: req.body.startdate,
+            endDate: req.body.endDate,
         },
 
 

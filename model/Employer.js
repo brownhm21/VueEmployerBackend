@@ -22,7 +22,7 @@ const employerSchema = new mongoose.Schema({
         required: true,
         max: 10
     },
-    adress: {
+    address: {
         type: String,
         required: true,
         min: 6
@@ -60,8 +60,7 @@ const employerSchema = new mongoose.Schema({
 
     avatar: {
         type: String,
-        default: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1674508543~exp=1674509143~hmac=d83992dcce4b25c59808c56bcec6ff7db7e58072b0e7ddfdc8da790034962399' ,
-
+        default: ''
 
     },
         

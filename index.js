@@ -7,6 +7,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const multer = require("multer");
+var path = require('path');
+
+var logger = require('morgan')
 ////////////////////////////////////////////
 var fileExtension = require('file-extension')
 
@@ -34,6 +37,10 @@ global.__basedir = __dirname;
 
 /////////////////////test 23/01/2023
 const testRoute = require('./routes/routes');
+
+//////////////////////test 25//01/2023
+const testRout = require('./routes/employers');
+
 
 
 
@@ -264,6 +271,9 @@ app.get('/', (req, res) => {
 
 //Route Middlewares
 app.use('/api/employer',testRoute );
+/////
+app.use('/api/employer',testRout );
+
 
 app.use('/api/user', authRoute);
 

@@ -284,6 +284,8 @@ app.use('/api/posts', postRoute);
 ////////////////////////////////////////
 // Make Images "Uploads" Folder Publicly Available
 app.use('/uploads/employers', express.static('employers'))
+/////////////////////////////////////////
+app.use(express.static(__dirname + '/uploads/employers'));
 ///////////////////////////////////////
 app.use(express.urlencoded({ extended: true }));
 

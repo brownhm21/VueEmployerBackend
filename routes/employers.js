@@ -71,7 +71,7 @@ router.post(`/employerImage`, upload.single("file"), async (req, res) => {
     address: req.body.address,
     city: req.body.city,
     zipcode: req.body.zipcode,
-    avatar: 'uploads/employers/'+req.file.filename,
+    avatar: req.file.filename,
     ///req.file.avatar,
 
     jobs: {
@@ -148,7 +148,7 @@ router.get('/employerList', async (req, res) => {
 router.get('/employerOne/:id', async (req, res) => {
   try {
       const employer = await Employer.findOne({_id:req.params.id})
-      if (!employer) throw new Error('No Company found')
+      if (!employer) throw new Error('No Employer found')
       res.status(200).json(employer)
   } catch (error) {
       res.status(500).json({ message: error.message })
@@ -163,6 +163,53 @@ router.get('/employerCompany/:id', async (req, res) => {
   } catch (error) {
       res.status(500).json({ message: error.message })
   }
+});
+
+///////////////////////////get company by user
+router.get('/employerCompanyByuser/:id', async (req, res) => {
+  try {
+      const employer = await Employer.find({createdByu:req.params.id})
+      if (!employer) throw new Error('No Employer found')
+      res.status(200).json(employer)
+  } catch (error) {
+      res.status(500).json({ message: error.message })
+  }
+});
+
+///////////////////////////get employers count
+router.get('/employerCount',(req, res) =>{
+  try{
+    Employer.count( {}, function(err, result){
+
+      if(err){
+          res.send(err)
+      }
+      else{
+          res.json(result)
+      }
+
+ })
+  }catch (error) {
+    res.status(500).json({ message: error.message })
+}
+});
+
+///////////////////////////get Trainee count
+router.get('/employerCountOfTrainee',(req, res) =>{
+  try{
+    Employer.count( { }, function(err, result){
+
+      if(err){
+          res.send(err)
+      }
+      else{
+          res.json(result)
+      }
+
+ })
+  }catch (error) {
+    res.status(500).json({ message: error.message })
+}
 });
 
 

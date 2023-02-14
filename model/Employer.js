@@ -47,6 +47,12 @@ const employerSchema = new mongoose.Schema({
             type: String,
             required: true,
         },
+        company: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Company',
+        required: true
+        },
+
         startdate: {
             type: Date,
             
@@ -71,15 +77,11 @@ const employerSchema = new mongoose.Schema({
     },
     createdByu: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true
     },
 
-    companyBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'companies',
-        required: true
-    },
+    
 
 });
 

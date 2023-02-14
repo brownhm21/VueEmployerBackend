@@ -47,6 +47,7 @@ const registerEmployerValidation = data =>{
 
             level :Joi.string().required(),
             companyjob:Joi.string().required(),
+            company:Joi.string().required(),
             startdate:Joi.date(),
             endDate:Joi.date(),
 

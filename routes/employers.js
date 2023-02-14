@@ -9,6 +9,8 @@ const multer = require("multer");
 
 
 
+
+
 var mongoose = require('mongoose');
 // Configure Storage
 var storage = multer.diskStorage({
@@ -48,7 +50,7 @@ router.post(`/employerImage`, upload.single("file"), async (req, res) => {
   req.body = {
     ...req.body,
     createdByu: ObjectId(req.body.createdByu), 
-    companyBy: ObjectId(req.body.companyBy),
+    // companyBy: ObjectId(req.body.companyBy),
   }
  const { error } = registerEmployerValidation(req.body);
   // Error in response
@@ -77,13 +79,14 @@ router.post(`/employerImage`, upload.single("file"), async (req, res) => {
     jobs: {
       level: req.body.level,
       companyjob: req.body.companyjob,
+      company: req.body.company,
       startdate: req.body.startdate,
       endDate: req.body.endDate,
   },
 
   /*createdByu: mongoose.Types.ObjectId(req.body.createdByu),*/
             createdByu: {_id : req.body.createdByu}, 
-            companyBy: {_id : req.body.companyBy},
+            //companyBy: {_id : req.body.companyBy},
   })
   try {
     const savedEmployer = await employer.save();
@@ -168,7 +171,9 @@ router.get('/employerCompany/:id', async (req, res) => {
 ///////////////////////////get company by user
 router.get('/employerCompanyByuser/:id', async (req, res) => {
   try {
-      const employer = await Employer.find({createdByu:req.params.id})
+      const employer = await Employer.find({createdByu:req.params.id}).populate({ path: 'jobs.company',
+      select:
+        'companyName companyEmail phoneNumber companyAdress companyCity ' })
       if (!employer) throw new Error('No Employer found')
       res.status(200).json(employer)
   } catch (error) {
@@ -210,6 +215,111 @@ router.get('/employerCountOfTrainee',(req, res) =>{
   }catch (error) {
     res.status(500).json({ message: error.message })
 }
+});
+/////////////////////////Update Employer
+router.patch('/update-Employer/:id',upload.single("file") ,async (req, res) => {
+
+
+  /////checking if the email of employer is already in the database
+  const emailExist = await Employer.findOne({ email: req.body.email });
+  if (emailExist) return res.status(400).send('Email already exists');
+  console.log(req.params)
+  console.log(req.body)
+  req.body = {
+    ...req.body,
+     
+    companyBy: ObjectId(req.body.companyBy),
+  }
+
+
+  
+  try {
+      const id = req.params.id;
+
+
+      const updatedData = req.body;
+
+
+      const options = { new: true };
+
+      const result = await Employer.findByIdAndUpdate(
+          id, updatedData, options
+      )
+      
+      res.send(result)
+  }
+  catch (error) {
+      res.status(400).json({ message: error.message })
+  }
+});
+/////////////////////////////////Update Employer 2
+router.put('/update-Employer2/:id',  async (req, res, next) => {
+
+  req.body = {
+    ...req.body,
+     
+    companyBy: ObjectId(req.body.companyBy),
+  }
+ 
+
+  // /////checking if the email of employer is already in the database
+  // const emailExist = await Employer.findOne({ email: req.body.email });
+  // if (emailExist) return res.status(400).send('Email already exists');
+
+
+
+
+  console.log(req.params)
+  const employer = new Employer({
+    
+    Firstname: req.body.Firstname,
+    Lastname: req.body.Lastname,
+    email: req.body.email,
+    phoneNumber: req.body.phoneNumber,
+    address: req.body.address,
+    city: req.body.city,
+    zipcode: req.body.zipcode,
+    //avatar: req.file.filename,
+    ///req.file.avatar,
+
+    jobs: {
+      level: req.body.level,
+      companyjob: req.body.companyjob,
+      startdate: req.body.startdate,
+      endDate: req.body.endDate,
+  },
+
+  /*createdByu: mongoose.Types.ObjectId(req.body.createdByu),*/ 
+            companyBy: {_id : req.body.companyBy},
+    
+  });
+  Employer.updateOne({_id: req.params.id}, employer).then(
+    () => {
+      res.status(201).json({
+        message: 'Thing updated successfully!'
+      });
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
+    }
+  );
+});
+
+
+/////////////////////////test of populate
+router.get('/employerOne1/:id', async (req, res) => {
+  try {
+      const employer = await Employer.findOne({_id:req.params.id}).populate({ path: 'jobs.company',
+      select:
+        'companyName companyEmail phoneNumber companyAdress companyCity ' })
+      if (!employer) throw new Error('No Employer found')
+      res.status(200).json(employer)
+  } catch (error) {
+      res.status(500).json({ message: error.message })
+  }
 });
 
 

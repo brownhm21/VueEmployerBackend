@@ -7,6 +7,8 @@ const {ObjectId} = require('mongodb')
 const Employer = require('../model/Employer');
 const multer = require("multer");
 
+var fs = require('fs');
+
 
 
 
@@ -118,21 +120,45 @@ router.delete('/delete-employer/:_id', async (req, res, next) => {
 });
 
 //////////////api2
-router.patch('/update-employerr/:id', async (req, res) => {
+router.patch('/update-employerr/:id', upload.single("image"), async (req, res) => {
+ 
+  /////checking if the email of employer is already in the database
+  const emailExist = await Employer.findOne({ email: req.body.email });
+  if (emailExist) return res.status(400).send('Email already exists');
+
+  console.log(req.params)
+  console.log(req.body)
+  
+
+  
   try {
       const id = req.params.id;
-      const delettedData = req.body;
+
+
+      const updatedData = req.body;
+      
+    const updateData = Object.assign({},req.body); // Copy req.body in order not to change it
+    
+    if (req.file) {
+      const image = req.file.filename;
+      updateData.avatar = image;
+  }
+   
+
+
       const options = { new: true };
 
       const result = await Employer.findByIdAndUpdate(
-          id, updatedData, options
+          id,  updatedData,options
       )
       
       res.send(result)
+
   }
   catch (error) {
       res.status(400).json({ message: error.message })
   }
+  
 });
 
 
@@ -180,8 +206,50 @@ router.get('/employerCompanyByuser/:id', async (req, res) => {
       res.status(500).json({ message: error.message })
   }
 });
+///////////////////////////get Employers count by user
+router.get('/EmployerUserr/:id', async (req, res) => {
+  try {
+    const employer = await Employer.find({createdByu:req.params.id}).count()
+    if (!employer) throw new Error('No Employer found')
+    res.status(200).json(employer)
+} catch (error) {
+    res.status(500).json({ message: error.message })
+}
+});
+///////////////////////////get Employers count by user Trainees
+router.get('/EmployerUserrr/:id', async (req, res) => {
+  try {
+    
+    const employer = await Employer.find({createdByu:req.params.id}).find({"jobs.level" : "Trainee"}).count()
+    if (!employer) throw new Error('No Employer found')
+    res.status(200).json(employer)
+} catch (error) {
+    res.status(500).json({ message: error.message })
+}
+});
+///////////////////////////get Employers count by user Working Student
+router.get('/EmployerUserrrr/:id', async (req, res) => {
+  try {
+    
+    const employer = await Employer.find({createdByu:req.params.id}).find({"jobs.level" : "Working Student"}).count()
+    if (!employer) throw new Error('No Employer found')
+    res.status(200).json(employer)
+} catch (error) {
+    res.status(500).json({ message: error.message })
+}
+});
 
 ///////////////////////////get employers count
+router.get('/employerCountt/:id',async(req, res) =>{
+  try {
+    const employer = await Employer.find({companyBy:req.params.id})
+    if (!employer) throw new Error('No Employer found')
+    res.status(200).json(employer)
+} catch (error) {
+    res.status(500).json({ message: error.message })
+}
+});
+///////////////////////////get employers count by Id
 router.get('/employerCount',(req, res) =>{
   try{
     Employer.count( {}, function(err, result){
